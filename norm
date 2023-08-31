@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Bash script to execute norm check for all files except those specified in the
+# .normignore file
+#
+# Works by looping through each line in the .normignore file and
+# adding it to the colon-separated GLOBIGNORE variable which ignores the
+# specified files from wildcards
+
+# The filename that contains the files to be ignored
+ignoreFile=".normignore"
+
+# Checks if the ignoreFile exists and adds the patterns to the GLOBIGNORE var
+if [ -e $ignoreFile ]; then
+  while IFS= read -r line
+  do
+    GLOBIGNORE+=":$line"
+  done <<< "$(cat ${ignoreFile})"
+fi
+
+# Check norminette on all the C and H files
+norminette *.c *.h
